@@ -15,6 +15,8 @@ function useMqtt(url: string, topic: string): Msg[] {
   const [data, setData] = useState<Msg[]>([]);
   const client = useRef<MqttClient>();
 
+
+  // luotiin useEffect ja yhteys
   useEffect(() => {
     const mqttClient = mqtt.connect(url);
 
@@ -29,6 +31,8 @@ function useMqtt(url: string, topic: string): Msg[] {
       });
     });
 
+    // client viestit 
+    
     mqttClient.on('message', (receivedTopic, message) => {
       if (receivedTopic === topic) {
         const msg: Msg = JSON.parse(message.toString());
