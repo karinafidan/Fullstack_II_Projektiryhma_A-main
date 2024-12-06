@@ -1,0 +1,35 @@
+.navbar {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    vertical-align: middle;
+    background-color: white;
+    padding: 8px;
+}
+
+.nav-items {
+    list-style-type: none;
+    display: flex;
+    margin-right: 1rem;
+}
+
+.nav-items li {
+    margin-right: 1rem;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.logoff {
+    background-color: gray;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 12px;
+    color: white;
+    border: none;
+    transition-duration: 0.4s;
+}
+
+.logoff:hover {
+    background-color: rgb(87, 87, 87);
+}

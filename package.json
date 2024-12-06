@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@types/mqtt": "^0.0.34",
+    "mqtt": "^5.10.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "vite": "^6.0.3"
+  }
+}

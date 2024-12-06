@@ -1,0 +1,12 @@
+.container {
+    display: flex;
+    justify-content: cneter;
+    align-items: center;
+}
+.totp {
+    display: flex;
+    flex-direction: column;
+    justify-content: cneter;
+    align-items: center;
+    padding: 2%;
+}

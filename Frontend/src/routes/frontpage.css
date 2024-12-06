@@ -1,0 +1,39 @@
+.sensori {
+    background-color: gray;
+    width: 240px;
+    height: 120px;
+    margin: 12px;
+    vertical-align: middle;
+    align-items: center;
+    padding: 0px;
+    box-shadow: 2px 2px 5px 0px rgb(95, 95, 95);
+}
+
+.sensori:hover {
+    background-color: rgb(150, 156, 158);
+    transition-duration: 0.15s;
+}
+
+.sensori p {
+    color: white;
+    padding: 0px;
+    margin: 0px;
+}
+
+.sensori h3 {
+    color: white;
+    margin-bottom: 5px;
+    margin-top: 10px;
+}
+
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sensorList {
+    list-style: none;
+    display: flex;
+}
