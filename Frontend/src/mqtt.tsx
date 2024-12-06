@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import mqtt, { MqttClient } from 'mqtt';
 
-// Viestityyppi
 type Msg = {
   id: number;
   name: string;
@@ -10,7 +9,8 @@ type Msg = {
   set_value: number;
 };
 
-// Luo ja hallitse MQTT-yhteys
+// Luodaan  MQTT-yhteys
+
 function useMqtt(url: string, topic: string): Msg[] {
   const [data, setData] = useState<Msg[]>([]);
   const client = useRef<MqttClient>();
@@ -48,17 +48,14 @@ function useMqtt(url: string, topic: string): Msg[] {
 }
 
 // Sovelluskomponentti
-
   function App() {
 
-    const [data] = useMqtt("broker.hivemq.com", 'test-amk-fs2')
-  
+    const [data] = useMqtt("broker.hivemq.com:1883", 'mqtt testi')
+
     return (
       <>
-        <h1>MQTT </h1>
-  
         {data.map((msg, i) => {
-          return <p key={i + "msg"}> {msg.value ?? 'no value'} </p>
+            return <p key={i + "msg"}> {msg.value ?? 'no value'} </p>
         })}
       </>
     )

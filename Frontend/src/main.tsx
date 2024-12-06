@@ -7,7 +7,7 @@ import ErrorPage from './error-page'
 import Settings, { sendSettingsAction } from './routes/settings.tsx'
 import Frontpage from './routes/frontpage.tsx'
 import Login from './routes/login.tsx'
-import App from './App.tsx'
+import mqtt from './mqtt.tsx'
 
 
 const router = createBrowserRouter([
