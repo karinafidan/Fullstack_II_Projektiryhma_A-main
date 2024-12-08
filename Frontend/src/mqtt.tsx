@@ -64,11 +64,13 @@ function useMqtt(url: string, publishTopic: string, subscribeTopic: string): Msg
 
 // Sovelluskomponentti
 // publish topic: a-team
-// subscribe topic: a-teamS
+// subscribe topic: a-team
 
   function App() {
 
-    const [data, publishMessage] = useMqtt('mqtt://broker.hivemq.com:1883','a-team')
+  const publishTopic = 'a-team'; 
+  const subscribeTopic = 'a-team'; 
+  const [data, publishMessage] = useMqtt('mqtt://broker.hivemq.com:1883', publishTopic, subscribeTopic);
 
     return (
       <>
