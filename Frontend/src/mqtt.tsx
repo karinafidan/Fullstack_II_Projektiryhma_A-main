@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import mqtt, { MqttClient } from 'mqtt';
-
+ 
 type Msg = {
   id: number;
   name: string;
@@ -11,7 +11,7 @@ type Msg = {
 
 // Luodaan  MQTT-yhteys
 
-function useMqtt(url: string, topic: string): Msg[] {
+function useMqtt(url: string, publishTopic: string, subscribeTopic: string): Msg[] {
   const [data, setData] = useState<Msg[]>([]);
   const client = useRef<MqttClient>();
 
@@ -22,19 +22,19 @@ function useMqtt(url: string, topic: string): Msg[] {
 
     mqttClient.on('connect', () => {
       console.log('Connected to MQTT broker');
-      mqttClient.subscribe(topic, (err) => {
+      mqttClient.subscribe(subscribeTopic, (err) => {
         if (!err) {
-          console.log(`Subscribed to topic: ${topic}`);
+          console.log(`Subscribed to topic: ${subscribeTopic}`);
         } else {
           console.error('Subscription error:', err);
         }
       });
     });
 
-    // client viestit 
+    // client viestit SubscribleTopic
     
     mqttClient.on('message', (receivedTopic, message) => {
-      if (receivedTopic === topic) {
+      if (receivedTopic === subscribeTopic) {
         const msg: Msg = JSON.parse(message.toString());
         console.log('Message received:', msg);
         setData((currentData) => [...currentData, msg]);
@@ -46,15 +46,29 @@ function useMqtt(url: string, topic: string): Msg[] {
     return () => {
       mqttClient.end();
     };
-  }, [url, topic]);
+  }, [url, subscribeTopic ]);
 
-  return data;
+  // lähetetään viesti publishMessage
+
+  const publishMessage = (msg: Msg) => {
+    if (client.current) {
+       client.current.publish(publishTopic, JSON.stringify(msg));
+       console.log(`Message sent to topic "${publishTopic}":`, msg);
+    } else {
+       console.error('MQTT client is not connected');
+    }
+  };
+
+  return [data, publishMessage];
 }
 
 // Sovelluskomponentti
+// publish topic: a-team
+// subscribe topic: a-teamS
+
   function App() {
 
-    const [data] = useMqtt("broker.hivemq.com:1883", 'mqtt testi')
+    const [data, publishMessage] = useMqtt('mqtt://broker.hivemq.com:1883','a-team')
 
     return (
       <>
@@ -66,4 +80,3 @@ function useMqtt(url: string, topic: string): Msg[] {
   }
 
 export default App;
-
