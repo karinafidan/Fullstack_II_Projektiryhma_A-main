@@ -34,6 +34,7 @@ function useMqtt(url: string, publishTopic: string, subscribeTopic: string): Msg
     // client viestit SubscribleTopic
     
     mqttClient.on('message', (receivedTopic, message) => {
+      console.log(`Message received on topic "${receivedTopic}":`, message.toString());
       if (receivedTopic === subscribeTopic) {
         const msg: Msg = JSON.parse(message.toString());
         console.log('Message received:', msg);
@@ -59,7 +60,7 @@ function useMqtt(url: string, publishTopic: string, subscribeTopic: string): Msg
     }
   };
 
-  return [data, publishMessage];
+  return [data, publishMessage] as [Msg[], (msg: Msg) => void];
 }
 
 // Sovelluskomponentti
@@ -69,16 +70,22 @@ function useMqtt(url: string, publishTopic: string, subscribeTopic: string): Msg
   function App() {
 
   const publishTopic = 'a-team'; 
-  const subscribeTopic = 'a-team'; 
+  const subscribeTopic = 'a-teamS'; 
   const [data, publishMessage] = useMqtt('mqtt://broker.hivemq.com:1883', publishTopic, subscribeTopic);
 
-    return (
-      <>
-        {data.map((msg, i) => {
-            return <p key={i + "msg"}> {msg.value ?? 'no value'} </p>
-        })}
-      </>
-    )
-  }
+  return (
+    <div>
+      {data.length > 0 ? (
+        data.map((msg, i) => (
+          <p key={i}>
+            <strong>{msg.name}</strong>: {msg.value}°C
+          </p>
+        ))
+      ) : (
+        <p>No data received yet</p>
+      )}
+    </div>
+  );
+}
 
 export default App;
