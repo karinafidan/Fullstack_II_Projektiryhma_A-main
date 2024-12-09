@@ -1,91 +1,73 @@
 import { useState, useEffect, useRef } from 'react';
 import mqtt, { MqttClient } from 'mqtt';
  
+async function createMqttConnection(url:string, topic: string, callback: (msg:Msg)=>void) {
+  try {
+    const client = await mqtt.connectAsync(url);
+
+    await client.subscribeAsync(topic)
+
+    client.on('message', (topic, data) => {
+      const msg = JSON.parse(data.toString())
+      console.log(msg, topic)
+
+      callback(msg)
+
+    })
+
+    return client
+  } catch (err) {
+    console.warn(err)
+    throw new Error("Could not connect to mqtt")
+  }
+}
+
 type Msg = {
-  id: number;
-  name: string;
-  value: number;
-  heater: boolean;
-  set_value: number;
-};
+  id: number,
+  name: string,
+  value: number,
+  heater: boolean,
+  set_value: number
+}
 
-// Luodaan  MQTT-yhteys
+function useMqtt(url: string, topic: string) {
 
-function useMqtt(url: string, publishTopic: string, subscribeTopic: string): Msg[] {
-  const [data, setData] = useState<Msg[]>([]);
-  const client = useRef<MqttClient>();
+  const [data, setData] = useState<Msg[]>([])
+  const client = useRef<MqttClient>()
 
-
-  // luotiin useEffect ja yhteys
   useEffect(() => {
-    const mqttClient = mqtt.connect(url);
 
-    mqttClient.on('connect', () => {
-      console.log('Connected to MQTT broker');
-      mqttClient.subscribe(subscribeTopic, (err) => {
-        if (!err) {
-          console.log(`Subscribed to topic: ${subscribeTopic}`);
-        } else {
-          console.error('Subscription error:', err);
-        }
-      });
-    });
+    if (!client.current) {
 
-    // client viestit SubscribleTopic
-    
-    mqttClient.on('message', (receivedTopic, message) => {
-      console.log(`Message received on topic "${receivedTopic}":`, message.toString());
-      if (receivedTopic === subscribeTopic) {
-        const msg: Msg = JSON.parse(message.toString());
-        console.log('Message received:', msg);
-        setData((currentData) => [...currentData, msg]);
-      }
-    });
-
-    client.current = mqttClient;
+      createMqttConnection(url, topic, (msg: Msg)=>{
+        setData((currentData) => {
+          currentData.push(msg)
+          return [...currentData]
+        })
+      })
+    }
 
     return () => {
-      mqttClient.end();
-    };
-  }, [url, subscribeTopic ]);
-
-  // lähetetään viesti publishMessage
-
-  const publishMessage = (msg: Msg) => {
-    if (client.current) {
-       client.current.publish(publishTopic, JSON.stringify(msg));
-       console.log(`Message sent to topic "${publishTopic}":`, msg);
-    } else {
-       console.error('MQTT client is not connected');
+      client.current?.end()
     }
-  };
+  }, [])
 
-  return [data, publishMessage] as [Msg[], (msg: Msg) => void];
+  return [data]
 }
 
-// Sovelluskomponentti
-// publish topic: a-team
-// subscribe topic: a-team
 
-  function App() {
+function App() {
 
-  const publishTopic = 'a-team'; 
-  const subscribeTopic = 'a-teamS'; 
-  const [data, publishMessage] = useMqtt('mqtt://broker.hivemq.com:1883', publishTopic, subscribeTopic);
+  const [data] = useMqtt("wss://test.mosquitto.org:8081", 'test-amk-fs2')
 
   return (
-    <div>
-      {data.length > 0 ? (
-        data.map((msg, i) => (
-          <p key={i}>
-            <strong>{msg.name}</strong>: {msg.value}°C
-          </p>
-        ))
-      ) : (
-        <p>No data received yet</p>
-      )}
-    </div>
-  );
+    <>
+    
+      {data.map((msg, i) => {
+        return <p key={i + "msg"}> {msg.value ?? 'no value'} </p>
+      })}
+    </>
+  )
 }
 
-export default App;
+export default App
