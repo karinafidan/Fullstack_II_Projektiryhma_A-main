@@ -30,10 +30,16 @@ type Msg = {
   set_value: number
 }
 
-function useMqtt(url: string, topic: string) {
+const [data] = useMqtt("wss://test.mosquitto.org:8081", 'test-amk-fs2')
+
+
+export function useMqtt(url: string, topic: string) {
 
   const [data, setData] = useState<Msg[]>([])
   const client = useRef<MqttClient>()
+
+
+
 
   useEffect(() => {
 
@@ -55,19 +61,3 @@ function useMqtt(url: string, topic: string) {
   return [data]
 }
 
-
-function App() {
-
-  const [data] = useMqtt("wss://test.mosquitto.org:8081", 'test-amk-fs2')
-
-  return (
-    <>
-    
-      {data.map((msg, i) => {
-        return <p key={i + "msg"}> {msg.value ?? 'no value'} </p>
-      })}
-    </>
-  )
-}
-
-export default App
