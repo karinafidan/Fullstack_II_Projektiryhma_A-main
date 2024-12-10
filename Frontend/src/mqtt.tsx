@@ -1,5 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import mqtt, { MqttClient } from 'mqtt';
+
+
+
+// import { useMqtt } from './mqtt.tsx'
+
  
 async function createMqttConnection(url:string, topic: string, callback: (msg:Msg)=>void) {
   try {
@@ -30,15 +35,15 @@ type Msg = {
   set_value: number
 }
 
-const [data] = useMqtt("wss://test.mosquitto.org:8081", 'test-amk-fs2')
-
 
 export function useMqtt(url: string, topic: string) {
 
   const [data, setData] = useState<Msg[]>([])
   const client = useRef<MqttClient>()
 
+  
 
+//const [data] = useMqtt("wss://test.mosquitto.org:8081", 'test-amk-fs2')
 
 
   useEffect(() => {
@@ -61,3 +66,16 @@ export function useMqtt(url: string, topic: string) {
   return [data]
 }
 
+// React-komponentti
+
+export default function Mqttkomponentti() {
+
+  const [data] = useMqtt("wss://test.mosquitto.org:8081", 'test-amk-fs2');
+
+  return (
+    <div>
+      {/* data */}
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </div>
+  );
+}
