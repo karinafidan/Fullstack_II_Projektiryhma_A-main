@@ -8,6 +8,11 @@ import Settings, { sendSettingsAction } from './routes/settings.tsx'
 import Frontpage from './routes/frontpage.tsx'
 import Login from './routes/login.tsx'
 import MqttComponent from './mqtt.tsx'
+import Frontpage from './frontpage.tsx'
+
+
+
+//import './frontpage.tsx'
 
 
 
