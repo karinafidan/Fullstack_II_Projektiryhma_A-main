@@ -1,10 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import mqtt, { MqttClient } from 'mqtt';
 
-
-
-// import { useMqtt } from './mqtt.tsx'
-
  
 async function createMqttConnection(url:string, topic: string, callback: (msg:Msg)=>void) {
   try {
@@ -43,9 +39,6 @@ export function useMqtt(url: string, topic: string) {
 
   
 
-//const [data] = useMqtt("wss://test.mosquitto.org:8081", 'test-amk-fs2')
-
-
   useEffect(() => {
 
     if (!client.current) {
@@ -67,15 +60,22 @@ export function useMqtt(url: string, topic: string) {
 }
 
 // React-komponentti
+  // const [data] = useMqtt("wss://test.mosquitto.org:8081", 'test-amk-fs2'); 
 
-export default function Mqttkomponentti() {
 
-  const [data] = useMqtt("wss://test.mosquitto.org:8081", 'test-amk-fs2');
+// Sovelluskomponentti
+function MqttComponent() {
+
+  const [data] = useMqtt('wss://test.mosquitto.org:8081','test-amk-fs2')
+
 
   return (
-    <div>
-      {/* data */}
-      <pre>{JSON.stringify(data, null, 2)}</pre>
-    </div>
-  );
+    <>
+      {data.map((msg, i) => {
+          return <p key={i + "msg"}> {msg.value ?? 'no value'} </p>
+      })}
+    </>
+  )
 }
+
+export default MqttComponent;

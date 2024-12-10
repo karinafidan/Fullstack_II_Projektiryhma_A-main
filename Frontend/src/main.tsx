@@ -7,9 +7,7 @@ import ErrorPage from './error-page'
 import Settings, { sendSettingsAction } from './routes/settings.tsx'
 import Frontpage from './routes/frontpage.tsx'
 import Login from './routes/login.tsx'
-
-
-// import { useMqtt } from './mqtt.tsx'
+import MqttComponent from './mqtt.tsx'
 
 
 
@@ -32,7 +30,13 @@ const router = createBrowserRouter([
       {
         path: "kirjaudu",
         element: <Login></Login>
+      },
+      {
+        path: "mqtt", 
+        element: <MqttComponent></MqttComponent>,
       }
+      
+
     ]
   }
 ])
